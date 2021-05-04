@@ -9,6 +9,7 @@ def Tweet(config, t):
         output = output.replace("{time}", t.timestamp)
         output = output.replace("{user_id}", t.user_id_str)
         output = output.replace("{username}", t.username)
+        output = output.replace("{user_data}", t.user_data)
         output = output.replace("{name}", t.name)
         output = output.replace("{place}", t.place)
         output = output.replace("{coordinates}", t.coordinates)

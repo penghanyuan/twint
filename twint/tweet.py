@@ -94,6 +94,7 @@ def Tweet(tw, config):
     t.user_id_str = tw["user_id_str"]
     t.username = tw["user_data"]['screen_name']
     t.name = tw["user_data"]['name']
+    t.user_data = tw["user_data"]
     t.place = tw['place'] if 'place' in tw and tw['place'] else ""
     t.coordinates = tw['coordinates'] if 'coordinates' in tw and tw['coordinates'] else ""
     t.timezone = strftime("%z", localtime())
