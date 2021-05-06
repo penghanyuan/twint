@@ -95,8 +95,27 @@ def Tweet(tw, config):
     t.username = tw["user_data"]['screen_name']
     t.name = tw["user_data"]['name']
     t.user_data = tw["user_data"]
+
+    try:
+        if('name' in tw['place']):
+            t.place_type = tw['place']['place_type']
+            t.place_name = tw['place']['name']
+            t.place_full_name = tw['place']['full_name']
+            t.place_country_code = tw['place']['country_code']
+            t.place_country = tw['place']['country']
+            t.place_bounding_box = tw['place']['bounding_box']
+
+    except:
+        t.place_type = ""
+        t.place_name = ""
+        t.place_full_name = ""
+        t.place_country_code = ""
+        t.place_country = ""
+        t.place_bounding_box = ""
+
     t.place = tw['place'] if 'place' in tw and tw['place'] else ""
     t.coordinates = tw['coordinates'] if 'coordinates' in tw and tw['coordinates'] else ""
+    t.geocode = tw['geo'] if 'geo' in tw and tw['geo'] else ""
     t.timezone = strftime("%z", localtime())
     t.mentions = _get_mentions(tw)
     t.reply_to = _get_reply_to(tw)
