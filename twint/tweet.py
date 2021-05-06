@@ -98,6 +98,8 @@ def Tweet(tw, config):
     t.username = tw["user_data"]['screen_name']
     t.name = tw["user_data"]['name']
     t.user_location = tw["user_data"]['location']
+    t.user_verified = tw["user_data"]['verified']
+    t.user_protected = tw["user_data"]['protected'] if 'protected' in tw["user_data"] and tw["user_data"]['protected'] else False
     t.user_description = tw["user_data"]['description']
     t.user_url = f"https://twitter.com/{t.username}"
 
