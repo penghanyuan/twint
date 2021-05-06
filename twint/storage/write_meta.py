@@ -88,6 +88,7 @@ def tweetFieldnames():
             "quote_url",
             "quoted_status_id",
             "is_quote_status",
+            "url_possibly_sensitive",
             "video",
             "thumbnail",
             "near",

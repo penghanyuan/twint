@@ -172,6 +172,8 @@ def Tweet(tw, config):
         t.user_rt_id = ''
 
     
+    t.url_possibly_sensitive = tw['possibly_sensitive'] if 'possibly_sensitive' in tw and tw['possibly_sensitive'] else False
+    
     try:
         t.is_quote_status = tw["is_quote_status"]
         t.quoted_status_id = tw["quoted_status_id_str"]    

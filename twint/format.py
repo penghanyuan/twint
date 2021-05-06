@@ -39,6 +39,7 @@ def Tweet(config, t):
         output = output.replace("{quote_url}", t.quote_url)
         output = output.replace("{quoted_status_id}", t.quoted_status_id)
         output = output.replace("{is_quote_status}", t.is_quote_status)
+        output = output.replace("{url_possibly_sensitive}", t.url_possibly_sensitive)
         output = output.replace("{near}", t.near)
         output = output.replace("{geo}", t.geo)
         output = output.replace("{mentions}", ",".join(t.mentions))
