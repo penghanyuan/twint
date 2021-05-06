@@ -1,3 +1,5 @@
+import re
+
 from time import strftime, localtime
 from datetime import datetime, timezone
 
@@ -90,11 +92,14 @@ def Tweet(tw, config):
     # date is of the format year,
     t.datestamp = _dt.strftime(Tweet_formats['datestamp'])
     t.timestamp = _dt.strftime(Tweet_formats['timestamp'])
+    
     t.user_id = int(tw["user_id_str"])
     t.user_id_str = tw["user_id_str"]
     t.username = tw["user_data"]['screen_name']
     t.name = tw["user_data"]['name']
-    t.user_data = tw["user_data"]
+    t.user_location = tw["user_data"]['location']
+    t.user_description = tw["user_data"]['description']
+    t.user_url = f"https://twitter.com/{t.username}"
 
     try:
         if('name' in tw['place']):
@@ -113,9 +118,10 @@ def Tweet(tw, config):
         t.place_country = ""
         t.place_bounding_box = ""
 
-    t.place = tw['place'] if 'place' in tw and tw['place'] else ""
     t.coordinates = tw['coordinates'] if 'coordinates' in tw and tw['coordinates'] else ""
     t.geocode = tw['geo'] if 'geo' in tw and tw['geo'] else ""
+    t.source = re.findall('<a[^>]*>([^<]+)<\/a>', tw['source'])[0]
+
     t.timezone = strftime("%z", localtime())
     t.mentions = _get_mentions(tw)
     t.reply_to = _get_reply_to(tw)
@@ -148,6 +154,7 @@ def Tweet(tw, config):
         t.cashtags = []
     t.replies_count = tw['reply_count']
     t.retweets_count = tw['retweet_count']
+    t.quote_count = tw['quote_count']
     t.likes_count = tw['favorite_count']
     t.link = f"https://twitter.com/{t.username}/status/{t.id}"
     try:
@@ -163,14 +170,21 @@ def Tweet(tw, config):
         t.retweet_date = ''
         t.user_rt = ''
         t.user_rt_id = ''
+
+    
     try:
+        t.is_quote_status = tw["is_quote_status"]
+        t.quoted_status_id = tw["quoted_status_id_str"]    
         t.quote_url = tw['quoted_status_permalink']['expanded'] if tw['is_quote_status'] else ''
-    except KeyError:
+    except:
+        t.is_quote_status = False
+        t.quoted_status_id = ""
         # means that the quoted tweet have been deleted
-        t.quote_url = 0
+        t.quote_url = ""
+
     t.near = config.Near if config.Near else ""
     t.geo = config.Geo if config.Geo else ""
-    t.source = config.Source if config.Source else ""
+    
     t.translate = ''
     t.trans_src = ''
     t.trans_dest = ''
