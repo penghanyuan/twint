@@ -111,6 +111,7 @@ def update(object, config):
             "is_quote_status": Tweet.is_quote_status,
             "url_possibly_sensitive": Tweet.url_possibly_sensitive,
             "search": str(config.Search),
+            "country": str(config.Country),
             "near": Tweet.near,
             "geo": Tweet.geo,
             "source": Tweet.source,

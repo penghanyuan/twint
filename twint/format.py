@@ -45,6 +45,8 @@ def Tweet(config, t):
         output = output.replace("{url_possibly_sensitive}", t.url_possibly_sensitive)
         output = output.replace("{near}", t.near)
         output = output.replace("{geo}", t.geo)
+        output = output.replace("{search}", t.search)
+        output = output.replace("{country}", t.country)
         output = output.replace("{mentions}", ",".join(t.mentions))
         output = output.replace("{translate}", t.translate)
         output = output.replace("{trans_src}", t.trans_src)
@@ -53,7 +55,7 @@ def Tweet(config, t):
         logme.debug(__name__+':Tweet:notFormat')
         output = f"{t.id_str} {t.datestamp} {t.timestamp} {t.timezone} "
 
-        # TODO: someone who is familiar with this code, needs to take a look at what this is <also see tweet.py>
+        # TODO: someone who is familiar with this code, needs tzo take a look at what this is <also see tweet.py>
         # if t.retweet:
         #    output += "RT "
 

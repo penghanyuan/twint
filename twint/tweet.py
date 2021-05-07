@@ -98,7 +98,7 @@ def Tweet(tw, config):
     t.username = tw["user_data"]['screen_name']
     t.name = tw["user_data"]['name']
     t.user_location = tw["user_data"]['location']
-    t.user_verified = tw["user_data"]['verified']
+    t.user_verified = tw["user_data"]['verified'] if 'verified' in tw["user_data"] and tw["user_data"]['verified'] else False
     t.user_protected = tw["user_data"]['protected'] if 'protected' in tw["user_data"] and tw["user_data"]['protected'] else False
     t.user_description = tw["user_data"]['description']
     t.user_url = f"https://twitter.com/{t.username}"
@@ -188,6 +188,8 @@ def Tweet(tw, config):
 
     t.near = config.Near if config.Near else ""
     t.geo = config.Geo if config.Geo else ""
+    t.search = config.Search if config.Search else ""
+    t.country = config.Country if config.Country else ""
     
     t.translate = ''
     t.trans_src = ''
