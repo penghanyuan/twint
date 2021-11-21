@@ -54,14 +54,12 @@ def handleIndexResponse(response):
 def createIndex(config, instance, **scope):
     if scope.get("scope") == "tweet":
         tweets_body = {
-                "mappings": {
                     "properties": {
                         "id": {"type": "long"},
                         "conversation_id": {"type": "long"},
                         "created_at": {"type": "text"},
                         "date": {"type": "date", "format": "yyyy-MM-dd HH:mm:ss"},
                         "timezone": {"type": "keyword"},
-                        "place": {"type": "keyword"},
                         "location": {"type": "keyword"},
                         "tweet": {"type": "text"},
                         "lang": {"type": "keyword"},
@@ -99,13 +97,15 @@ def createIndex(config, instance, **scope):
                                 "username": {"type": "keyword"}
                             }
                         },
+                        "coordinates":{
+                            "type": "float",
+                        },
                         "retweet_date": {"type": "date", "format": "yyyy-MM-dd HH:mm:ss", "ignore_malformed": True},
                         "urls": {"type": "keyword"},
                         "translate": {"type": "text"},
                         "trans_src": {"type": "keyword"},
                         "trans_dest": {"type": "keyword"},
-                        }
-                    },
+                        },
                     "settings": {
                         "number_of_shards": 1,
                         "analysis": {
@@ -216,7 +216,13 @@ def Tweet(Tweet, config):
                 "created_at": Tweet.datetime,
                 "date": dt,
                 "timezone": Tweet.timezone,
-                "place": Tweet.place,
+                "place_type": Tweet.place_type,
+                "place_name": Tweet.place_name,
+                "place_full_name": Tweet.place_full_name,
+                "place_country_code": Tweet.place_country_code,
+                "place_country": Tweet.place_country,
+                "place_bounding_box": Tweet.place_bounding_box,
+                "coordinates": Tweet.coordinates,
                 "tweet": Tweet.tweet,
                 "language": Tweet.lang,
                 "hashtags": Tweet.hashtags,
@@ -224,19 +230,38 @@ def Tweet(Tweet, config):
                 "user_id_str": Tweet.user_id_str,
                 "username": Tweet.username,
                 "name": Tweet.name,
+                "user_location": Tweet.user_location,
+                "user_description": Tweet.user_description,
+                "user_url": Tweet.user_url,
+                "user_verified": Tweet.user_verified,
+                "user_protected": Tweet.user_protected,
                 "day": date_obj.weekday(),
                 "hour": date_obj.hour,
                 "link": Tweet.link,
                 "retweet": retweet,
                 "essid": config.Essid,
-                "nlikes": int(Tweet.likes_count),
-                "nreplies": int(Tweet.replies_count),
-                "nretweets": int(Tweet.retweets_count),
+                "likes_count": int(Tweet.likes_count),
+                "replies_count": int(Tweet.replies_count),
+                "retweets_count": int(Tweet.retweets_count),
+                "quote_count": int(Tweet.quote_count),
                 "quote_url": Tweet.quote_url,
+                "quoted_status_id": Tweet.quoted_status_id,
+                "is_quote_status": Tweet.is_quote_status,
                 "video": Tweet.video,
+                "url_possibly_sensitive": Tweet.url_possibly_sensitive,
                 "search": str(config.Search),
-                "near": config.Near
+                "country": str(config.Country),
+                "near": config.Near,
+                "geo": Tweet.geo,
+                "source": Tweet.source,
                 }
+            # "_source": {
+            #     "id": str(Tweet.id),
+            #     "conversation_id": Tweet.conversation_id,
+            #     "created_at": Tweet.datetime,
+            #     "date": dt,
+            #     "tweet": Tweet.tweet,
+            #     }
             }
     if retweet is not None:
         j_data["_source"].update({"user_rt_id": Tweet.user_rt_id})
@@ -273,23 +298,25 @@ def Tweet(Tweet, config):
             _is_near_def = getLocation(__near + __geo, near=True)
         if _near:
             j_data["_source"].update({"geo_near": _near})
-    if Tweet.place:
-        _t_place = getLocation(Tweet.place)
-        if _t_place:
-            j_data["_source"].update({"geo_tweet": getLocation(Tweet.place)})
-    if Tweet.source:
-        j_data["_source"].update({"source": Tweet.Source})
+    
+    # if Tweet.place:
+    #     _t_place = getLocation(Tweet.place)
+    #     if _t_place:
+    #         j_data["_source"].update({"geo_tweet": getLocation(Tweet.place)})
+    # if Tweet.source:
+    #     j_data["_source"].update({"source": Tweet.Source})
     if config.Translate:
-        j_data["_source"].update({"translate": Tweet.translate})        
+        j_data["_source"].update({"translate": Tweet.translate})
         j_data["_source"].update({"trans_src": Tweet.trans_src})
         j_data["_source"].update({"trans_dest": Tweet.trans_dest})
-
+    # print(j_data)
     actions.append(j_data)
 
     es = Elasticsearch(config.Elasticsearch, verify_certs=config.Skip_certs)
     if not _index_tweet_status:
         _index_tweet_status = createIndex(config, es, scope="tweet")
     with nostdout():
+        # print(actions)
         helpers.bulk(es, actions, chunk_size=2000, request_timeout=200)
     actions = []
 

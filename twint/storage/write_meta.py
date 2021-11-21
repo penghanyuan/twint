@@ -41,8 +41,8 @@ def tweetData(t):
             "url_possibly_sensitive": t.url_possibly_sensitive,
             "video": t.video,
             "thumbnail": t.thumbnail,
-            # "near": t.near,
-            # "geo": t.geo,
+            "near": t.near,
+            "geo": t.geo,
             "query": t.search,
             "country": t.country,
             "source": t.source,
@@ -51,9 +51,9 @@ def tweetData(t):
             "retweet_id": t.retweet_id,
             "reply_to": t.reply_to,
             "retweet_date": t.retweet_date,
-            # "translate": t.translate,
-            # "trans_src": t.trans_src,
-            # "trans_dest": t.trans_dest,
+            "translate": t.translate,
+            "trans_src": t.trans_src,
+            "trans_dest": t.trans_dest,
             }
     return data
 

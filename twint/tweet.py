@@ -119,8 +119,8 @@ def Tweet(tw, config):
         t.place_country_code = ""
         t.place_country = ""
         t.place_bounding_box = ""
-
-    t.coordinates = tw['coordinates'] if 'coordinates' in tw and tw['coordinates'] else ""
+    # print(tw['coordinates'])
+    t.coordinates = tw['coordinates']['coordinates'] if 'coordinates' in tw and tw['coordinates'] else ""
     t.geocode = tw['geo'] if 'geo' in tw and tw['geo'] else ""
     t.source = re.findall('<a[^>]*>([^<]+)<\/a>', tw['source'])[0]
 

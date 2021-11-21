@@ -7,6 +7,7 @@ from .storage import db, elasticsearch, write, panda
 
 import logging as logme
 
+
 follows_list = []
 tweets_list = []
 users_list = []
